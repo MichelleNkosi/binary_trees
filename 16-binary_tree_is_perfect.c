@@ -1,48 +1,51 @@
 #include "binary_trees.h"
 
 /**
- * height - Measures the height of a binary tree.
- * @tree: Pointer to the root node of the tree to measure.
- *
- * Return: The height of the tree.
+ * binary_tree_height - Measures the height of a binary tree.
+ * @tree: Pointer to the root node of the tree to measure the height.
+ * Return: Height of the tree. If tree is NULL, return 0.
  */
-size_t height(const binary_tree_t *tree)
+size_t binary_tree_height(const binary_tree_t *tree)
 {
-if (tree == NULL)
+size_t left_height, right_height;
+
+if (!tree)
 return (0);
-return (1 + MAX(height(tree->left), height(tree->right)));
+
+left_height = binary_tree_height(tree->left);
+right_height = binary_tree_height(tree->right);
+
+return ((left_height > right_height ? left_height : right_height) + 1);
 }
 
 /**
- * is_perfect_helper - Helper function that checks if the tree is perfect.
- * @tree: Pointer to the root node of the tree to check.
- * @depth: The expected depth of leaf nodes.
- * @level: Current level of the node.
- *
- * Return: 1 if the tree is perfect, 0 otherwise.
+ * binary_tree_size - Measures the size of a binary tree.
+ * @tree: Pointer to the root node of the tree to measure the size.
+ * Return: Size of the tree. If tree is NULL, return 0.
  */
-int is_perfect_helper(const binary_tree_t *tree, size_t depth, size_t level)
+size_t binary_tree_size(const binary_tree_t *tree)
 {
-if (tree == NULL)
-return (1);
-if (tree->left == NULL && tree->right == NULL)
-return (level == depth);
-if (tree->left == NULL || tree->right == NULL)
+if (!tree)
 return (0);
-return (is_perfect_helper(tree->left, depth, level + 1) &&
-is_perfect_helper(tree->right, depth, level + 1));
+
+return (1 + binary_tree_size(tree->left) + binary_tree_size(tree->right));
 }
 
 /**
  * binary_tree_is_perfect - Checks if a binary tree is perfect.
  * @tree: Pointer to the root node of the tree to check.
- *
- * Return: 1 if the tree is perfect, 0 otherwise.
+ * Return: 1 if the tree is perfect, otherwise 0.
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-if (tree == NULL)
+size_t height, expected_nodes, size;
+
+if (!tree)
 return (0);
-size_t depth = height(tree) - 1;
-return (is_perfect_helper(tree, depth, 0));
+
+height = binary_tree_height(tree) - 1;
+expected_nodes = (1 << (height + 1)) - 1;
+size = binary_tree_size(tree);
+
+return (size == expected_nodes);
 }
